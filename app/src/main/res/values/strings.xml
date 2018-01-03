@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SideCryptoBar</string>
+    <string name="search_hint">Search Coins</string>
+</resources>
