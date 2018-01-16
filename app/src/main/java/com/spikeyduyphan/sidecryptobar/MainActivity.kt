@@ -18,6 +18,7 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
 
     var cryptoList = ArrayList<Crypto>()
+    var cryptoArrayAdapter = CryptoArrayAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // REST web service call to get data from coinmarketcap API
-    class RetrieveFeedTask : AsyncTask<URL, Void, JSONObject>() {
+    inner class RetrieveFeedTask : AsyncTask<URL, Void, JSONObject>() {
         override fun doInBackground(vararg p0: URL?): JSONObject? {
             var conn : HttpURLConnection? = null
             try {
@@ -65,7 +66,11 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: JSONObject?) {
             // need to convert the jsonObject into an array list
+            if (result != null) {
+                convertJSONArrayList(result) // populate cryptoList
+                // need to refresh the cryptoArrayAdapter
 
+            }
         }
     }
 
@@ -73,15 +78,17 @@ class MainActivity : AppCompatActivity() {
     private fun convertJSONArrayList(obj : JSONObject) {
         cryptoList.clear() // make sure the list is clear and updated each time
         try {
-            var jArray : JSONArray = obj.getJSONArray("{")
+            // this should try to get the object after the 'ticker'
+            // may have to change this depending on what result comes out of the API
+            var jArray : JSONArray = obj.getJSONArray("ticker")
             // convert the gathered objects into Crypto Class
             // this may be hard coded if we are only taking a certain number of tickers into account
-            // TODO fix the array
-//            for (i in jArray.) {
-//
-//            }
+            (0..(jArray.length() - 1))
+                    .map { jArray.getJSONObject(it) }
+                    .forEach { cryptoList.add(Crypto(it.getString("id"), it.getString("symbol"), it.getString("price_usd"))) }
         } catch (e : JSONException) {
             Log.e("JSON","JSON ERROR")
         }
     }
+
 }
