@@ -27,7 +27,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // create arrayadapter to bind to cryptolist
+        val urlString = getString(R.string.apiSite)
+        val URLurlString = URL(urlString)
+        val feedTask = RetrieveFeedTask()
+        val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+
         val searchView1 = findViewById<SearchView>(R.id.firstSearch)
         val searchView2 = findViewById<SearchView>(R.id.secondSearch)
         val switchButton = findViewById<ImageButton>(R.id.switchCurrency)
@@ -36,13 +40,12 @@ class MainActivity : AppCompatActivity() {
         val finalTextView = findViewById<TextView>(R.id.convertTextView)
         val testView = findViewById<TextView>(R.id.placeholder) // test  placeholder, should display the first ticker aka BTC
 
-        convertButton.setOnClickListener{
-            // just need the code after the button is pressed
-            val urlString = getString(R.string.apiSite)
-            val URLurlString = URL(urlString)
-            val feedTask = RetrieveFeedTask()
-            feedTask.execute(URLurlString)
-        }
+//        convertButton.setOnClickListener{
+//            // just need the code after the button is pressed
+//
+//        }
+
+        
 
     }
 
@@ -90,13 +93,14 @@ class MainActivity : AppCompatActivity() {
                 // need to refresh the cryptoArrayAdapter
                 Log.i("FINISHED","this is the result" + result.getJSONObject(0).toString())
                 val textViewer = findViewById<TextView>(R.id.placeholder)
-                for (t in 0..(result.length() - 1)) {
-                    if (result.getJSONObject(t).getString("id") == "qtum") {
-                        textViewer.text = result.getJSONObject(t).getString("id")
-                    } else {
-                        Log.i("CRYPTO","TICKER: " + result.getJSONObject(t).getString("id"))
-                    }
-                }
+                // EX this is how to iterate through the jsonarray when searching for ticker
+//                for (t in 0..(result.length() - 1)) {
+//                    if (result.getJSONObject(t).getString("id") == "qtum") {
+//                        textViewer.text = result.getJSONObject(t).getString("id")
+//                    } else {
+//                        Log.i("CRYPTO","TICKER: " + result.getJSONObject(t).getString("id"))
+//                    }
+//                }
 //                textViewer.text = result.optJSONObject(0).getString("id")
             }
         }
