@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.TextView
 import org.json.JSONArray
 import org.json.JSONException
@@ -19,12 +20,15 @@ class MainActivity : AppCompatActivity() {
 
     var cryptoList = ArrayList<Crypto>()
     var cryptoArrayAdapter = CryptoArrayAdapter()
+    val urlString = "https://api.coinmarketcap.com/v1/ticker/?limit=200"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // set listener for convert button, when pressed, should display result
+        // create arrayadapter to bind to cryptolist
+        val searchView1 = findViewById<SearchView>(R.id.firstSearch)
+        val searchView2 = findViewById<SearchView>(R.id.secondSearch)
 
     }
 
