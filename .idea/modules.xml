@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SideCryptoBar.iml" filepath="$PROJECT_DIR$/SideCryptoBar.iml" />
+      <module fileurl="file://C:\Users\Spikes\Projects\SideCryptoBar\SideCryptoBar.iml" filepath="C:\Users\Spikes\Projects\SideCryptoBar\SideCryptoBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Spikes\Projects\SideCryptoBar\app\app.iml" filepath="C:\Users\Spikes\Projects\SideCryptoBar\app\app.iml" />
     </modules>
   </component>
 </project>
