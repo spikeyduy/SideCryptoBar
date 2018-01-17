@@ -13,6 +13,7 @@ import android.widget.TextView
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.w3c.dom.Text
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -21,8 +22,6 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    var cryptoList = ArrayList<Crypto>()
-    var cryptoArrayAdapter = CryptoArrayAdapter() // may not need this as we
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,27 +88,37 @@ class MainActivity : AppCompatActivity() {
             if (result != null) {
 //                convertJSONArrayList(result) // populate cryptoList
                 // need to refresh the cryptoArrayAdapter
-                Log.i("FINISHED","this is the result" + result.toString())
+                Log.i("FINISHED","this is the result" + result.getJSONObject(0).toString())
+                val textViewer = findViewById<TextView>(R.id.placeholder)
+                for (t in 0..(result.length() - 1)) {
+                    if (result.getJSONObject(t).getString("id") == "qtum") {
+                        textViewer.text = result.getJSONObject(t).getString("id")
+                    } else {
+                        Log.i("CRYPTO","TICKER: " + result.getJSONObject(t).getString("id"))
+                    }
+                }
+//                textViewer.text = result.optJSONObject(0).getString("id")
             }
         }
     }
 
-    // convert JSONObject into an arrayList
-    // do we need this? We should just be able to return the JSONObject and take whatever info we need from that
-    private fun convertJSONArrayList(obj : JSONObject) {
-        cryptoList.clear() // make sure the list is clear and updated each time
-        try {
-            // this should try to get the object after the 'ticker'
-            // may have to change this depending on what result comes out of the API
-            var jArray : JSONArray = obj.getJSONArray("ticker")
-            // convert the gathered objects into Crypto Class
-            // this may be hard coded if we are only taking a certain number of tickers into account
-            (0..(jArray.length() - 1))
-                    .map { jArray.getJSONObject(it) }
-                    .forEach { cryptoList.add(Crypto(it.getString("id"), it.getString("symbol"), it.getString("price_usd"))) }
-        } catch (e : JSONException) {
-            Log.e("JSON","JSON ERROR")
-        }
-    }
+    // should not need this because result is already a JSONArray
+//    // convert JSONObject into an arrayList
+//    // do we need this? We should just be able to return the JSONObject and take whatever info we need from that
+//    private fun convertJSONArrayList(obj : JSONObject) {
+//        cryptoList.clear() // make sure the list is clear and updated each time
+//        try {
+//            // this should try to get the object after the 'ticker'
+//            // may have to change this depending on what result comes out of the API
+//            var jArray : JSONArray = obj.getJSONArray("ticker")
+//            // convert the gathered objects into Crypto Class
+//            // this may be hard coded if we are only taking a certain number of tickers into account
+//            (0..(jArray.length() - 1))
+//                    .map { jArray.getJSONObject(it) }
+//                    .forEach { cryptoList.add(Crypto(it.getString("id"), it.getString("symbol"), it.getString("price_usd"))) }
+//        } catch (e : JSONException) {
+//            Log.e("JSON","JSON ERROR")
+//        }
+//    }
 
 }
