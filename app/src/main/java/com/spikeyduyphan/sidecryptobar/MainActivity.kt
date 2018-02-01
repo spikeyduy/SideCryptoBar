@@ -29,21 +29,22 @@ class MainActivity : AppCompatActivity() {
 
         val urlString = getString(R.string.apiSite)
         val URLurlString = URL(urlString)
-        val feedTask = RetrieveFeedTask()
-        val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+//        val feedTask = RetrieveFeedTask()
+//        val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
 
-        val searchView1 = findViewById<SearchView>(R.id.firstSearch)
+        val searchView1 = findViewById<View>(R.id.firstSearch)
         val searchView2 = findViewById<SearchView>(R.id.secondSearch)
         val switchButton = findViewById<ImageButton>(R.id.switchCurrency)
-        val editText = findViewById<EditText>(R.id.edit_query)
+        val editText = findViewById<View>(R.id.edit_query)
         val convertButton = findViewById<Button>(R.id.convertButton)
         val finalTextView = findViewById<TextView>(R.id.convertTextView)
         val testView = findViewById<TextView>(R.id.placeholder) // test  placeholder, should display the first ticker aka BTC
 
-//        convertButton.setOnClickListener{
-//            // just need the code after the button is pressed
-//
-//        }
+        convertButton.setOnClickListener{
+            // just need the code after the button is pressed
+            val feedTask = RetrieveFeedTask()
+            val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+        }
 
         
 
