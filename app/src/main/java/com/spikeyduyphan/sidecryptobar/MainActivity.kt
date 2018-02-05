@@ -22,6 +22,13 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
+    private var testView : TextView ?= null
+    private var searchView1 : SearchView ?= null
+    private var searchView2 : SearchView ?= null
+    private var switchButton : ImageButton ?= null
+    private var editText : EditText ?= null
+    private var convertButton : Button ?= null
+    private var finalTextView : TextView ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,18 +39,21 @@ class MainActivity : AppCompatActivity() {
 //        val feedTask = RetrieveFeedTask()
 //        val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
 
-        val searchView1 = findViewById<View>(R.id.firstSearch)
-        val searchView2 = findViewById<SearchView>(R.id.secondSearch)
-        val switchButton = findViewById<ImageButton>(R.id.switchCurrency)
-        val editText = findViewById<View>(R.id.edit_query)
-        val convertButton = findViewById<Button>(R.id.convertButton)
-        val finalTextView = findViewById<TextView>(R.id.convertTextView)
-        val testView = findViewById<TextView>(R.id.placeholder) // test  placeholder, should display the first ticker aka BTC
+        searchView1 = findViewById(R.id.firstSearch)
+        searchView2 = findViewById(R.id.secondSearch)
+        switchButton = findViewById(R.id.switchCurrency)
+        editText = findViewById(R.id.edit_query)
+        convertButton = findViewById(R.id.convertButton)
+        finalTextView = findViewById(R.id.convertTextView)
+        testView = findViewById(R.id.placeholder) // test  placeholder, should display the first ticker aka BTC
 
-        convertButton.setOnClickListener{
-            // just need the code after the button is pressed
-            val feedTask = RetrieveFeedTask()
-            val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+        val cConvertButton = convertButton
+        if (cConvertButton != null) {
+            cConvertButton.setOnClickListener{
+                // just need the code after the button is pressed
+                val feedTask = RetrieveFeedTask()
+                val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+            }
         }
 
         
@@ -98,8 +108,8 @@ class MainActivity : AppCompatActivity() {
 //                for (t in 0..(result.length() - 1)) {
 //                    if (result.getJSONObject(t).getString("id") == "qtum") {
 //                        textViewer.text = result.getJSONObject(t).getString("id")
-//                    } else {
-//                        Log.i("CRYPTO","TICKER: " + result.getJSONObject(t).getString("id"))
+////                    } else {
+////                        Log.i("CRYPTO","TICKER: " + result.getJSONObject(t).getString("id"))
 //                    }
 //                }
 //                textViewer.text = result.optJSONObject(0).getString("id")
@@ -107,23 +117,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // should not need this because result is already a JSONArray
-//    // convert JSONObject into an arrayList
-//    // do we need this? We should just be able to return the JSONObject and take whatever info we need from that
-//    private fun convertJSONArrayList(obj : JSONObject) {
-//        cryptoList.clear() // make sure the list is clear and updated each time
-//        try {
-//            // this should try to get the object after the 'ticker'
-//            // may have to change this depending on what result comes out of the API
-//            var jArray : JSONArray = obj.getJSONArray("ticker")
-//            // convert the gathered objects into Crypto Class
-//            // this may be hard coded if we are only taking a certain number of tickers into account
-//            (0..(jArray.length() - 1))
-//                    .map { jArray.getJSONObject(it) }
-//                    .forEach { cryptoList.add(Crypto(it.getString("id"), it.getString("symbol"), it.getString("price_usd"))) }
-//        } catch (e : JSONException) {
-//            Log.e("JSON","JSON ERROR")
-//        }
-//    }
-
+    fun searchCoins(name: String, coinArr: JSONArray) {
+        // this is used in the text boxes and should be used when typing in textview
+        for (t in 0..(coinArr.length() - 1)) {
+            if (coinArr.getJSONObject(t).getString("id") == name) {
+                testView!!.text  = coinArr.getJSONObject(t).getString("id")
+            }
+        }
+    }
 }
