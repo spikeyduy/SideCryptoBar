@@ -1,15 +1,15 @@
 package com.spikeyduyphan.sidecryptobar
 
+import android.app.Activity
+import android.app.SearchManager
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.support.v7.widget.SearchView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -29,15 +29,34 @@ class MainActivity : AppCompatActivity() {
     private var editText : EditText ?= null
     private var convertButton : Button ?= null
     private var finalTextView : TextView ?= null
+    private var cryptoArray : JSONArray ?= null
+    private var urlString : String ?= null
+    private var URLurlString : URL ?= null
+
+    private var searchViewList : ListView ?= null
+    private var coinArrayList : ArrayList<Coin> ?= null
+    private var cryptoArrayAdapter : CryptoArrayAdapter ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val urlString = getString(R.string.apiSite)
-        val URLurlString = URL(urlString)
+        urlString = getString(R.string.apiSite)
+        URLurlString = URL(urlString)
 //        val feedTask = RetrieveFeedTask()
 //        val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+
+        // create the array for all the coins
+        val feedTask = RetrieveFeedTask()
+        cryptoArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+//        val finCryptoArray = cryptoArray
+
+        // get search intent, verify, and get query
+        val intent : Intent = getIntent()
+        if (Intent.ACTION_SEARCH.equals(intent.action)) {
+            var query = intent.getStringExtra(SearchManager.QUERY)
+            searchCoins(query)
+        }
 
         searchView1 = findViewById(R.id.firstSearch)
         searchView2 = findViewById(R.id.secondSearch)
@@ -47,12 +66,18 @@ class MainActivity : AppCompatActivity() {
         finalTextView = findViewById(R.id.convertTextView)
         testView = findViewById(R.id.placeholder) // test  placeholder, should display the first ticker aka BTC
 
+        // this is getting and populating a listview with all the coins
+        searchViewList = findViewById(R.id.search1ListView) // the list that shows all the coins
+        cryptoArrayAdapter = CryptoArrayAdapter(this, android.R.layout.simple_list_item_1, coinArrayList)
+        searchViewList!!.adapter = cryptoArrayAdapter
+
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+
         val cConvertButton = convertButton
         if (cConvertButton != null) {
             cConvertButton.setOnClickListener{
                 // just need the code after the button is pressed
-                val feedTask = RetrieveFeedTask()
-                val cryptoArray : JSONArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+
             }
         }
 
@@ -117,11 +142,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun searchCoins(name: String, coinArr: JSONArray) {
+    fun convertJSONToArray(coinArray : JSONArray) {
+        // this converts the JSONArray into a more managable arraylist
+
+    }
+
+    fun searchCoins(name: String) {
         // this is used in the text boxes and should be used when typing in textview
-        for (t in 0..(coinArr.length() - 1)) {
-            if (coinArr.getJSONObject(t).getString("id") == name) {
-                testView!!.text  = coinArr.getJSONObject(t).getString("id")
+        val feedTask = RetrieveFeedTask()
+        cryptoArray = feedTask.execute(URLurlString).get() // jsonarray that is returned by the feedTask
+        val finCryptoArray = cryptoArray
+        if (finCryptoArray != null) {
+            for (t in 0..(finCryptoArray.length() - 1)) {
+                if (finCryptoArray.getJSONObject(t).getString("id") == name) {
+                    testView!!.text  = finCryptoArray.getJSONObject(t).getString("id")
+                    Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
+                }
             }
         }
     }
