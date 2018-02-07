@@ -68,36 +68,5 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="96dp"/>
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="PlaceHolder"
-            android:id="@+id/placeholder"/>
-
-    </ScrollView>
-    <ListView
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_below="@+id/firstSearch"
-        android:id="@+id/search1ListView">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/coinSlot1"
-            android:text="Name"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/coinSlot2"
-            android:text="Name"/>
-    </ListView>
 
 </RelativeLayout>
