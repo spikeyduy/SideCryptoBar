@@ -12,4 +12,10 @@ class Coin {
         this.ticker = ticker
         this.priceUSD = priceUSD
     }
+
+    override fun toString(): String {
+        return "Coin(name='$name', ticker='$ticker', priceUSD='$priceUSD')"
+    }
+
+
 }

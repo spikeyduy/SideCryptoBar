@@ -142,18 +142,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // TODO finish this so coinArray is not null
     private fun convertJSONToArray(coinArray : JSONArray) {
         // this converts the JSONArray into a more managable arraylist
         val coinArrayList : ArrayList<Coin>  = ArrayList()
         for (i in 0..(coinArray.length() - 1)) {
             val coin : JSONObject = coinArray.getJSONObject(i) // get one coin's data
             Log.i("CONVERTER","this is the current coin: " + coin)
-            Log.i("CONVERTER","This is the current coinArrayList: " + coinArrayList)
             coinArrayList.add(
                     Coin(coin.getString("name"),
                             coin.getString("symbol"),
                             coin.getString("price_usd")))
+            Log.i("CONVERTER","This is the current coinArrayList: " + coinArrayList[i].toString())
         }
     }
 
