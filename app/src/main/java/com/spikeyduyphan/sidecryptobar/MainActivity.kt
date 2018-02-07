@@ -66,10 +66,13 @@ class MainActivity : AppCompatActivity() {
 
         // this is getting and populating a listview with all the coins
         // TODO work on getting a listview of the coins then work from that array
-//        searchViewList = findViewById(R.id.search1ListView) // the list that shows all the coins
-//        cryptoArrayAdapter = CryptoArrayAdapter(this, android.R.layout.simple_list_item_1, coinArrayList)
+        searchViewList = findViewById(R.id.coinListView) // the list that shows all the coins
+        cryptoArrayAdapter = CryptoArrayAdapter(this, coinArrayList) // coinArrayList must not be empty
+        if (finCryptoArray != null) {
+            Log.i("CONVERSION","CRYPTOARRAY IS NOT EMPTY")
+            convertJSONToArray(finCryptoArray)
+        }
 //        searchViewList!!.adapter = cryptoArrayAdapter
-//        convertJSONToArray(cryptoArray!!)
 //        cryptoArrayAdapter!!.notifyDataSetChanged()
 
         // TODO convert button listener
@@ -80,8 +83,6 @@ class MainActivity : AppCompatActivity() {
 //
 //            }
 //        }
-
-        
 
     }
 
@@ -141,10 +142,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun convertJSONToArray(coinArray : JSONArray) {
+    // TODO finish this so coinArray is not null
+    private fun convertJSONToArray(coinArray : JSONArray) {
         // this converts the JSONArray into a more managable arraylist
         for (i in 0..(coinArray.length())) {
-            var coin : JSONObject = coinArray.getJSONObject(i) // get one coin's data
+            val coin : JSONObject = coinArray.getJSONObject(i) // get one coin's data
             coinArrayList!!.add(
                     Coin(coin.getString("name"),
                             coin.getString("symbol"),
