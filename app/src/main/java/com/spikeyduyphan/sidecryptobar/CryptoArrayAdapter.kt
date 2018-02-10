@@ -21,7 +21,7 @@ class CryptoArrayAdapter(context: Context?, objects: ArrayList<Coin>?) : ArrayAd
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         // get coin object from list
-        var coin : Coin = getItem(position)
+        val coin : Coin = getItem(position)
 
         var viewHold : ViewHolder ?= null // references the list item's views
 
