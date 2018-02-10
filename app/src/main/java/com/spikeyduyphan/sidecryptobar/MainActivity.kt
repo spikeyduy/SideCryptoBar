@@ -52,17 +52,6 @@ class MainActivity : AppCompatActivity() {
         // this is the working array we want to be working on? OR should we convert into arraylist then work with that?
         val finCryptoArray = cryptoArray
 
-        // get search intent, verify, and get query
-        // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
-        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
-//        val intent : Intent = intent
-//        if (Intent.ACTION_SEARCH == intent.action) {
-//            val query = intent.getStringExtra(SearchManager.QUERY)
-//            searchCoins(query)
-//        }
-        if (onSearchRequested()) {
-            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
-        }
 
         searchView1 = findViewById(R.id.firstSearch)
         searchView2 = findViewById(R.id.secondSearch)
@@ -78,10 +67,25 @@ class MainActivity : AppCompatActivity() {
         cryptoArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, coinArrayList)
         searchViewList!!.adapter = cryptoArrayAdapter
 
+//        searchView1!!.setOnQueryTextListener(SearchView.OnQueryTextListener)
+
+        // get search intent, verify, and get query
+        // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+        val intent : Intent = intent
+        if (Intent.ACTION_SEARCH == intent.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            searchCoins(query, coinArrayList!!)
+        }
+        if (onSearchRequested()) {
+//            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
+        }
 
         // TODO convert button listener
         val cConvertButton = convertButton
         cConvertButton!!.setOnClickListener{
+            // get all the inputs
+
             finalTextView!!.text  = coinConverter(firstcoin!!.priceUSD.toInt(), secondCoin!!.priceUSD.toInt(), coinAmount ).toString()
         }
 
@@ -150,19 +154,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     // should it return the coin symbol?
-    fun searchCoins(name: String) {
+    fun searchCoins(name : String, coinList : ArrayList<Coin>) {
         // this is used in the text boxes and should be used when typing in textview
-        val feedTask = RetrieveFeedTask()
-        cryptoArray = feedTask.execute(actualURLString).get() // jsonarray that is returned by the feedTask
-        val finCryptoArray = cryptoArray
-        if (finCryptoArray != null) {
-            for (t in 0..(finCryptoArray.length() - 1)) {
-                if (finCryptoArray.getJSONObject(t).getString("id") == name) {
-                    testView!!.text  = finCryptoArray.getJSONObject(t).getString("id")
-                    Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
-                } else {
-                    Log.i("SEARCHCOINS","STILL SEARCHING FOR THE RIGHT COIN")
-                }
+//        val capName = name.capitalize()
+//        Log.i("SEARCHCOINS", "This is the desired coin: " + capName)
+        for (t in 0..(coinList.size-1)) {
+            if (coinList[t].ticker.contains(name, true)) {
+//                testView!!.text  = coinList[t].name
+                Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
+                Toast.makeText(this, "FOUND " + coinList[t].name, Toast.LENGTH_LONG).show()
+                break
+            } else {
+                Log.i("SEARCHCOINS","STILL SEARCHING FOR THE RIGHT COIN. Curr coin = " + coinList[t])
             }
         }
     }
