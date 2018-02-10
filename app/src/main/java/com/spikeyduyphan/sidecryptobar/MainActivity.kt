@@ -2,6 +2,7 @@ package com.spikeyduyphan.sidecryptobar
 
 import android.app.Activity
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -69,17 +70,25 @@ class MainActivity : AppCompatActivity() {
 
 //        searchView1!!.setOnQueryTextListener(SearchView.OnQueryTextListener)
 
+        // set up the searchviews so they send the data through intents
+        val searchManager : SearchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView1!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView1!!.setIconifiedByDefault(false)
+        searchView2!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView2!!.setIconifiedByDefault(false)
+
+
         // get search intent, verify, and get query
         // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
-        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+//        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
         val intent : Intent = intent
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             searchCoins(query, coinArrayList!!)
         }
-        if (onSearchRequested()) {
-//            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
-        }
+//        if (onSearchRequested()) {
+////            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
+//        }
 
         // TODO convert button listener
         val cConvertButton = convertButton
@@ -89,6 +98,14 @@ class MainActivity : AppCompatActivity() {
             finalTextView!!.text  = coinConverter(firstcoin!!.priceUSD.toInt(), secondCoin!!.priceUSD.toInt(), coinAmount ).toString()
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (Intent.ACTION_SEARCH == intent!!.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            searchCoins(query, coinArrayList!!)
+        }
     }
 
     // REST web service call to get data from coinmarketcap API
@@ -154,7 +171,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // should it return the coin symbol?
-    fun searchCoins(name : String, coinList : ArrayList<Coin>) {
+    private fun searchCoins(name : String, coinList : ArrayList<Coin>) {
         // this is used in the text boxes and should be used when typing in textview
 //        val capName = name.capitalize()
 //        Log.i("SEARCHCOINS", "This is the desired coin: " + capName)
@@ -163,6 +180,7 @@ class MainActivity : AppCompatActivity() {
 //                testView!!.text  = coinList[t].name
                 Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
                 Toast.makeText(this, "FOUND " + coinList[t].name, Toast.LENGTH_LONG).show()
+                searchView1!!.setQuery(coinList[t].ticker, false)
                 break
             } else {
                 Log.i("SEARCHCOINS","STILL SEARCHING FOR THE RIGHT COIN. Curr coin = " + coinList[t])
