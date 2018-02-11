@@ -8,6 +8,8 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private var firstcoin : Coin ?= null
     private var secondCoin : Coin ?= null
-    private var coinAmount : Int = 0
+    private var coinAmount : Float = 0.0F
 
     private var counterCoin : String = "First"
 
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         searchView1 = findViewById(R.id.firstSearch)
         searchView2 = findViewById(R.id.secondSearch)
         switchButton = findViewById(R.id.switchCurrency)
-        editText = findViewById(R.id.edit_query)
+        editText = findViewById(R.id.edit_query) as EditText
         convertButton = findViewById(R.id.convertButton)
         finalTextView = findViewById(R.id.convertTextView)
 
@@ -106,10 +108,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-        
-//        editText!!.setOnClickListener(object : View.OnClickListener {
-//
-//        })
+
 
         // get search intent, verify, and get query
         // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
@@ -134,12 +133,17 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         // TODO convert button listener
-//        val cConvertButton = convertButton
-//        cConvertButton!!.setOnClickListener{
-//            // get all the inputs
-//
-//            finalTextView!!.text  = coinConverter(firstcoin!!.priceUSD.toInt(), secondCoin!!.priceUSD.toInt(), coinAmount ).toString()
-//        }
+        val cConvertButton = convertButton
+        cConvertButton!!.setOnClickListener{
+            // get all the inputs
+            coinAmount = editText!!.text.toString().toFloat()
+            Toast.makeText(this, coinAmount.toString(), Toast.LENGTH_SHORT).show()
+            if (coinAmount != 0.0F && firstcoin != null && secondCoin != null) {
+                finalTextView!!.text = coinConverter(firstcoin!!.priceUSD.toFloat(), secondCoin!!.priceUSD.toFloat(), coinAmount).toString()
+            } else {
+                Toast.makeText(this, "You forgot to input a coin and/or an amount.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
@@ -245,7 +249,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // this method takes two coins and converts how much coin2 a user is able to get with x amount of coin1
-    fun coinConverter(coin1 : Int, coin2 : Int, amount : Int): Int {
+    private fun coinConverter(coin1 : Float, coin2 : Float, amount : Float): Float {
         return (coin1 * amount)/coin2
     }
 }
