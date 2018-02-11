@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.util.Log
+import android.view.View
 import android.widget.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
     private var firstcoin : Coin ?= null
     private var secondCoin : Coin ?= null
     private var coinAmount : Int = 0
+
+    private var counterCoin : String = "First"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,34 +80,86 @@ class MainActivity : AppCompatActivity() {
         searchView2!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView2!!.setIconifiedByDefault(false)
 
+        // these two listeners let app know which is the current searchView 
+        searchView1!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText : String) : Boolean {
+                Log.i("COUNTERcount","onTextChangeFIRST")
+                counterCoin = "First"
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+        })
+
+        searchView2!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText : String) : Boolean {
+                Log.i("COUNTERcount","onTextChangeSECOND")
+                counterCoin = "Second"
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+        })
+        
+//        editText!!.setOnClickListener(object : View.OnClickListener {
+//
+//        })
 
         // get search intent, verify, and get query
         // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
 //        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
-        val intent : Intent = intent
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            searchCoins(query, coinArrayList!!)
-        }
+//        val intent : Intent = intent
+//        if (Intent.ACTION_SEARCH == intent!!.action) {
+//            val query = intent.getStringExtra(SearchManager.QUERY)
+//            if ((counter % 2) != 0) {
+//                secondCoin = searchCoins(query, coinArrayList!!)
+//                Toast.makeText(this, "Setting CoinS: " + secondCoin!!.name, Toast.LENGTH_SHORT).show()
+//                Log.i("COUNTER","Counter: " + counter)
+//                counter += 1
+//            } else if((counter % 2) == 0) {
+//                firstcoin = searchCoins(query,coinArrayList!!)
+//                Toast.makeText(this, "Setting Coin: " + firstcoin!!.name, Toast.LENGTH_SHORT).show()
+//                counter += 1
+//                Log.i("COUNTERcount","Counter: " + counter)
+//            }
+//        }
 //        if (onSearchRequested()) {
 ////            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
 //        }
 
         // TODO convert button listener
-        val cConvertButton = convertButton
-        cConvertButton!!.setOnClickListener{
-            // get all the inputs
-
-            finalTextView!!.text  = coinConverter(firstcoin!!.priceUSD.toInt(), secondCoin!!.priceUSD.toInt(), coinAmount ).toString()
-        }
+//        val cConvertButton = convertButton
+//        cConvertButton!!.setOnClickListener{
+//            // get all the inputs
+//
+//            finalTextView!!.text  = coinConverter(firstcoin!!.priceUSD.toInt(), secondCoin!!.priceUSD.toInt(), coinAmount ).toString()
+//        }
 
     }
 
     override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
+//        super.onNewIntent(intent)
+//        setIntent(intent)
         if (Intent.ACTION_SEARCH == intent!!.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            searchCoins(query, coinArrayList!!)
+//            Log.i("COUNTERcount", "This is the count before:  " + counter)
+//            Log.i("COUNTERcount", "Trying to find tag: " + intent.)
+            if (counterCoin == "First") {
+                firstcoin = searchCoins(query, coinArrayList!!)
+                Toast.makeText(this, "Setting CoinS: " + firstcoin!!.name, Toast.LENGTH_SHORT).show()
+//                Log.i("COUNTERcount","Counter: " + counterCoin)
+            }
+            if (counterCoin == "Second") {
+                secondCoin = searchCoins(query,coinArrayList!!)
+                Toast.makeText(this, "Setting Coin: " + secondCoin!!.name, Toast.LENGTH_SHORT).show()
+//                Log.i("COUNTERcount","CounterELSE: " + counter)
+            }
         }
     }
 
@@ -171,21 +226,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     // should it return the coin symbol?
-    private fun searchCoins(name : String, coinList : ArrayList<Coin>) {
+    private fun searchCoins(name : String, coinList : ArrayList<Coin>) : Coin {
         // this is used in the text boxes and should be used when typing in textview
 //        val capName = name.capitalize()
 //        Log.i("SEARCHCOINS", "This is the desired coin: " + capName)
+        var returnCoin : Coin = Coin("blank", "blk", "0")
         for (t in 0..(coinList.size-1)) {
             if (coinList[t].ticker.contains(name, true)) {
-//                testView!!.text  = coinList[t].name
-                Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
-                Toast.makeText(this, "FOUND " + coinList[t].name, Toast.LENGTH_LONG).show()
-                searchView1!!.setQuery(coinList[t].ticker, false)
+                //                testView!!.text  = coinList[t].name
+                //                Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
+                //                Toast.makeText(this, "FOUND " + coinList[t].name, Toast.LENGTH_LONG).show()
+                //                searchView1!!.setQuery(coinList[t].ticker, false)
+                returnCoin = coinList[t]
                 break
-            } else {
-                Log.i("SEARCHCOINS","STILL SEARCHING FOR THE RIGHT COIN. Curr coin = " + coinList[t])
             }
         }
+        return returnCoin
     }
 
     // this method takes two coins and converts how much coin2 a user is able to get with x amount of coin1
