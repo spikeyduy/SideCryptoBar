@@ -1,6 +1,5 @@
 package com.spikeyduyphan.sidecryptobar
 
-import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -8,10 +7,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -23,7 +19,6 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    private var testView : TextView ?= null
     private var searchView1 : SearchView ?= null
     private var searchView2 : SearchView ?= null
     private var switchButton : ImageButton ?= null
@@ -62,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         searchView1 = findViewById(R.id.firstSearch)
         searchView2 = findViewById(R.id.secondSearch)
         switchButton = findViewById(R.id.switchCurrency)
-        editText = findViewById(R.id.edit_query) as EditText
+        editText = findViewById(R.id.edit_query)
         convertButton = findViewById(R.id.convertButton)
         finalTextView = findViewById(R.id.convertTextView)
 
@@ -85,8 +80,15 @@ class MainActivity : AppCompatActivity() {
         // these two listeners let app know which is the current searchView 
         searchView1!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText : String) : Boolean {
-                Log.i("COUNTERcount","onTextChangeFIRST")
+//                Log.i("COUNTERcount",newText)
                 counterCoin = "First"
+                firstcoin = searchCoins(newText, coinArrayList!!)
+//                Log.i("COUNTERcount",firstcoin!!.name)
+                if (firstcoin!!.name === "blank") {
+                    Toast.makeText(baseContext, "You have not entered a valid coin.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(baseContext, "You have selected: " + firstcoin!!.name, Toast.LENGTH_SHORT).show()
+                }
                 return false
             }
 
@@ -98,8 +100,13 @@ class MainActivity : AppCompatActivity() {
 
         searchView2!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText : String) : Boolean {
-                Log.i("COUNTERcount","onTextChangeSECOND")
-                counterCoin = "Second"
+                secondCoin = searchCoins(newText, coinArrayList!!)
+//                Log.i("COUNTERcount",firstcoin!!.name)
+                if (secondCoin!!.name === "blank") {
+                    Toast.makeText(baseContext, "You have not entered a valid coin.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(baseContext, "You have selected: " + secondCoin!!.name, Toast.LENGTH_SHORT).show()
+                }
                 return false
             }
 
@@ -109,35 +116,11 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-
-        // get search intent, verify, and get query
-        // TODO POP UP VIEW OF LIST OF COINS ON SEARCH TYPE
-//        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
-//        val intent : Intent = intent
-//        if (Intent.ACTION_SEARCH == intent!!.action) {
-//            val query = intent.getStringExtra(SearchManager.QUERY)
-//            if ((counter % 2) != 0) {
-//                secondCoin = searchCoins(query, coinArrayList!!)
-//                Toast.makeText(this, "Setting CoinS: " + secondCoin!!.name, Toast.LENGTH_SHORT).show()
-//                Log.i("COUNTER","Counter: " + counter)
-//                counter += 1
-//            } else if((counter % 2) == 0) {
-//                firstcoin = searchCoins(query,coinArrayList!!)
-//                Toast.makeText(this, "Setting Coin: " + firstcoin!!.name, Toast.LENGTH_SHORT).show()
-//                counter += 1
-//                Log.i("COUNTERcount","Counter: " + counter)
-//            }
-//        }
-//        if (onSearchRequested()) {
-////            Toast.makeText(this, "SEARCH BEGINNING",Toast.LENGTH_LONG).show()
-//        }
-
-        // TODO convert button listener
         val cConvertButton = convertButton
         cConvertButton!!.setOnClickListener{
             // get all the inputs
+//            Toast.makeText(this, coinAmount.toString(), Toast.LENGTH_SHORT).show()
             coinAmount = editText!!.text.toString().toFloat()
-            Toast.makeText(this, coinAmount.toString(), Toast.LENGTH_SHORT).show()
             if (coinAmount != 0.0F && firstcoin != null && secondCoin != null) {
                 finalTextView!!.text = coinConverter(firstcoin!!.priceUSD.toFloat(), secondCoin!!.priceUSD.toFloat(), coinAmount).toString()
             } else {
@@ -163,6 +146,9 @@ class MainActivity : AppCompatActivity() {
                 secondCoin = searchCoins(query,coinArrayList!!)
                 Toast.makeText(this, "Setting Coin: " + secondCoin!!.name, Toast.LENGTH_SHORT).show()
 //                Log.i("COUNTERcount","CounterELSE: " + counter)
+            }
+            if (counterCoin == "Third") {
+                coinAmount = intent.getStringExtra(SearchManager.QUERY).toFloat()
             }
         }
     }
@@ -234,7 +220,7 @@ class MainActivity : AppCompatActivity() {
         // this is used in the text boxes and should be used when typing in textview
 //        val capName = name.capitalize()
 //        Log.i("SEARCHCOINS", "This is the desired coin: " + capName)
-        var returnCoin : Coin = Coin("blank", "blk", "0")
+        var returnCoin = Coin("blank", "blk", "0")
         for (t in 0..(coinList.size-1)) {
             if (coinList[t].ticker.contains(name, true)) {
                 //                testView!!.text  = coinList[t].name
