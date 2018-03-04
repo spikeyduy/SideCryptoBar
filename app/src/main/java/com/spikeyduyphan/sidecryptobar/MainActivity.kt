@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.util.Log
 import android.widget.*
+import com.samsung.android.sdk.SsdkUnsupportedException
+import com.samsung.android.sdk.look.Slook
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private var coinAmount : Float = 0.0F
 
     private var counterCoin : String = "First"
+
+    private var slook : Slook = Slook() // SAMSUNG SLOOK EDGE
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +130,13 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "You forgot to input a coin and/or an amount.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Implementing the edgeview sidebar in samsung phones
+        try {
+            slook.initialize(this)
+        } catch (e: SsdkUnsupportedException) {
+            Log.i("SLOOK", "ERROR: " + e)
         }
 
     }
@@ -222,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 //        Log.i("SEARCHCOINS", "This is the desired coin: " + capName)
         var returnCoin = Coin("blank", "blk", "0")
         for (t in 0..(coinList.size-1)) {
-            if (coinList[t].ticker.contains(name, true)) {
+            if (coinList[t].ticker.contains(name, true) || coinList[t].name.contains(name, true)) {
                 //                testView!!.text  = coinList[t].name
                 //                Log.i("SEARCHCOINS", "FOUND THE RIGHT COIN")
                 //                Toast.makeText(this, "FOUND " + coinList[t].name, Toast.LENGTH_LONG).show()
